@@ -1,0 +1,1552 @@
+Terminals unused in grammar
+
+   T_U
+   T_CX
+
+
+Grammar
+
+    0 $accept: mainprogram "end of file"
+
+    1 mainprogram: T_OPENQASM T_REAL ";" program
+
+    2 program: statement
+    3        | program statement
+
+    4 statement: decl
+    5          | reg
+    6          | qop
+    7          | T_IF "(" T_ID "==" T_UINTEGER ")" qop
+
+    8 decl: gatedecl goplist "}"
+    9     | gatedecl "}"
+
+   10 gatedecl: T_GATE_CUSTOM T_ID idlist "{"
+   11         | T_GATE_CUSTOM T_ID "(" ")" idlist "{"
+   12         | T_GATE_CUSTOM T_ID "(" explist ")" idlist "{"
+
+   13 reg: T_QREG T_ID "[" T_UINTEGER "]" ";"
+   14    | T_CREG T_ID "[" T_UINTEGER "]" ";"
+
+   15 qop: uop
+   16    | T_MEASURE argument "->" argument ";"
+   17    | T_RESET argument ";"
+   18    | T_BARRIER anylist ";"
+   19    | T_OPAQUE T_ID idlist ";"
+   20    | T_OPAQUE T_ID "(" ")" idlist ";"
+   21    | T_OPAQUE T_ID "(" explist ")" idlist ";"
+
+   22 uop: T_ID anylist ";"
+   23    | T_ID "(" ")" anylist ";"
+   24    | T_ID "(" explist ")" anylist ";"
+
+   25 goplist: qop
+   26        | goplist qop
+
+   27 anylist: idlist
+   28        | mixedlist
+
+   29 idlist: T_ID
+   30       | idlist "," T_ID
+
+   31 mixedlist: T_ID "[" T_UINTEGER "]"
+   32          | mixedlist "," T_ID
+   33          | mixedlist "," T_ID "[" T_UINTEGER "]"
+   34          | idlist "," T_ID "[" T_UINTEGER "]"
+
+   35 argument: T_ID
+   36         | T_ID "[" T_UINTEGER "]"
+
+   37 explist: exp
+   38        | explist "," exp
+
+   39 exp: T_REAL
+   40    | T_UINTEGER
+   41    | T_PI
+   42    | T_ID
+   43    | exp T_ADD exp
+   44    | exp T_SUB exp
+   45    | exp T_MUL exp
+   46    | exp T_DIV exp
+   47    | T_SUB exp
+   48    | exp T_CARROT exp
+   49    | "(" exp ")"
+   50    | unaryop "(" exp ")"
+
+   51 unaryop: T_SIN
+   52        | T_COS
+   53        | T_TAN
+   54        | T_EXP
+   55        | T_LN
+   56        | T_SQRT
+
+
+Terminals, with rules where they appear
+
+"end of file" (0) 0
+error (256)
+T_OPENQASM (258) 1
+T_QREG <std::string> (259) 13
+T_CREG <std::string> (260) 14
+T_GATE_CUSTOM <std::string> (261) 10 11 12
+T_OPAQUE <std::string> (262) 19 20 21
+T_BARRIER <std::string> (263) 18
+T_MEASURE <std::string> (264) 16
+T_RESET <std::string> (265) 17
+T_U (266)
+T_CX (267)
+T_IF (268) 7
+"(" (269) 7 11 12 20 21 23 24 49 50
+")" (270) 7 11 12 20 21 23 24 49 50
+"{" (271) 10 11 12
+"}" (272) 8 9
+"[" (273) 13 14 31 33 34 36
+"]" (274) 13 14 31 33 34 36
+"," (275) 30 32 33 34 38
+";" (276) 1 13 14 16 17 18 19 20 21 22 23 24
+"->" (277) 16
+"==" (278) 7
+T_ADD <std::string> (279) 43
+T_SUB <std::string> (280) 44 47
+T_MUL <std::string> (281) 45
+T_DIV <std::string> (282) 46
+T_CARROT <std::string> (283) 48
+T_PI <std::string> (284) 41
+T_SIN <std::string> (285) 51
+T_COS <std::string> (286) 52
+T_TAN <std::string> (287) 53
+T_EXP <std::string> (288) 54
+T_LN <std::string> (289) 55
+T_SQRT <std::string> (290) 56
+T_ID <std::string> (291) 7 10 11 12 13 14 19 20 21 22 23 24 29 30 31
+    32 33 34 35 36 42
+T_REAL <double> (292) 1 39
+T_UINTEGER <unsigned int> (293) 7 13 14 31 33 34 36 40
+
+
+Nonterminals, with rules where they appear
+
+$accept (39)
+    on left: 0
+mainprogram <std::shared_ptr<qrane_mainprogram>> (40)
+    on left: 1, on right: 0
+program <qrane_statementlist> (41)
+    on left: 2 3, on right: 1 3
+statement <std::shared_ptr<qrane_statement>> (42)
+    on left: 4 5 6 7, on right: 2 3
+decl <std::shared_ptr<qrane_decl>> (43)
+    on left: 8 9, on right: 4
+gatedecl <std::shared_ptr<qrane_decl>> (44)
+    on left: 10 11 12, on right: 8 9
+reg <std::shared_ptr<qrane_reg>> (45)
+    on left: 13 14, on right: 5
+qop <std::shared_ptr<qrane_qop>> (46)
+    on left: 15 16 17 18 19 20 21, on right: 6 7 25 26
+uop <std::shared_ptr<qrane_qop>> (47)
+    on left: 22 23 24, on right: 15
+goplist <qrane_statementlist> (48)
+    on left: 25 26, on right: 8 26
+anylist <qrane_argumentlist> (49)
+    on left: 27 28, on right: 18 22 23 24
+idlist <qrane_argumentlist> (50)
+    on left: 29 30, on right: 10 11 12 19 20 21 27 30 34
+mixedlist <qrane_argumentlist> (51)
+    on left: 31 32 33 34, on right: 28 32 33
+argument <std::shared_ptr<qrane_argument>> (52)
+    on left: 35 36, on right: 16 17
+explist <qrane_parameterlist> (53)
+    on left: 37 38, on right: 12 21 24 38
+exp <std::shared_ptr<qrane_parameter>> (54)
+    on left: 39 40 41 42 43 44 45 46 47 48 49 50, on right: 37 38 43
+    44 45 46 47 48 49 50
+unaryop <unaryop_type> (55)
+    on left: 51 52 53 54 55 56, on right: 50
+
+
+State 0
+
+    0 $accept: . mainprogram "end of file"
+
+    T_OPENQASM  shift, and go to state 1
+
+    mainprogram  go to state 2
+
+
+State 1
+
+    1 mainprogram: T_OPENQASM . T_REAL ";" program
+
+    T_REAL  shift, and go to state 3
+
+
+State 2
+
+    0 $accept: mainprogram . "end of file"
+
+    "end of file"  shift, and go to state 4
+
+
+State 3
+
+    1 mainprogram: T_OPENQASM T_REAL . ";" program
+
+    ";"  shift, and go to state 5
+
+
+State 4
+
+    0 $accept: mainprogram "end of file" .
+
+    $default  accept
+
+
+State 5
+
+    1 mainprogram: T_OPENQASM T_REAL ";" . program
+
+    T_QREG         shift, and go to state 6
+    T_CREG         shift, and go to state 7
+    T_GATE_CUSTOM  shift, and go to state 8
+    T_OPAQUE       shift, and go to state 9
+    T_BARRIER      shift, and go to state 10
+    T_MEASURE      shift, and go to state 11
+    T_RESET        shift, and go to state 12
+    T_IF           shift, and go to state 13
+    T_ID           shift, and go to state 14
+
+    program    go to state 15
+    statement  go to state 16
+    decl       go to state 17
+    gatedecl   go to state 18
+    reg        go to state 19
+    qop        go to state 20
+    uop        go to state 21
+
+
+State 6
+
+   13 reg: T_QREG . T_ID "[" T_UINTEGER "]" ";"
+
+    T_ID  shift, and go to state 22
+
+
+State 7
+
+   14 reg: T_CREG . T_ID "[" T_UINTEGER "]" ";"
+
+    T_ID  shift, and go to state 23
+
+
+State 8
+
+   10 gatedecl: T_GATE_CUSTOM . T_ID idlist "{"
+   11         | T_GATE_CUSTOM . T_ID "(" ")" idlist "{"
+   12         | T_GATE_CUSTOM . T_ID "(" explist ")" idlist "{"
+
+    T_ID  shift, and go to state 24
+
+
+State 9
+
+   19 qop: T_OPAQUE . T_ID idlist ";"
+   20    | T_OPAQUE . T_ID "(" ")" idlist ";"
+   21    | T_OPAQUE . T_ID "(" explist ")" idlist ";"
+
+    T_ID  shift, and go to state 25
+
+
+State 10
+
+   18 qop: T_BARRIER . anylist ";"
+
+    T_ID  shift, and go to state 26
+
+    anylist    go to state 27
+    idlist     go to state 28
+    mixedlist  go to state 29
+
+
+State 11
+
+   16 qop: T_MEASURE . argument "->" argument ";"
+
+    T_ID  shift, and go to state 30
+
+    argument  go to state 31
+
+
+State 12
+
+   17 qop: T_RESET . argument ";"
+
+    T_ID  shift, and go to state 30
+
+    argument  go to state 32
+
+
+State 13
+
+    7 statement: T_IF . "(" T_ID "==" T_UINTEGER ")" qop
+
+    "("  shift, and go to state 33
+
+
+State 14
+
+   22 uop: T_ID . anylist ";"
+   23    | T_ID . "(" ")" anylist ";"
+   24    | T_ID . "(" explist ")" anylist ";"
+
+    "("   shift, and go to state 34
+    T_ID  shift, and go to state 26
+
+    anylist    go to state 35
+    idlist     go to state 28
+    mixedlist  go to state 29
+
+
+State 15
+
+    1 mainprogram: T_OPENQASM T_REAL ";" program .
+    3 program: program . statement
+
+    T_QREG         shift, and go to state 6
+    T_CREG         shift, and go to state 7
+    T_GATE_CUSTOM  shift, and go to state 8
+    T_OPAQUE       shift, and go to state 9
+    T_BARRIER      shift, and go to state 10
+    T_MEASURE      shift, and go to state 11
+    T_RESET        shift, and go to state 12
+    T_IF           shift, and go to state 13
+    T_ID           shift, and go to state 14
+
+    $default  reduce using rule 1 (mainprogram)
+
+    statement  go to state 36
+    decl       go to state 17
+    gatedecl   go to state 18
+    reg        go to state 19
+    qop        go to state 20
+    uop        go to state 21
+
+
+State 16
+
+    2 program: statement .
+
+    $default  reduce using rule 2 (program)
+
+
+State 17
+
+    4 statement: decl .
+
+    $default  reduce using rule 4 (statement)
+
+
+State 18
+
+    8 decl: gatedecl . goplist "}"
+    9     | gatedecl . "}"
+
+    T_OPAQUE   shift, and go to state 9
+    T_BARRIER  shift, and go to state 10
+    T_MEASURE  shift, and go to state 11
+    T_RESET    shift, and go to state 12
+    "}"        shift, and go to state 37
+    T_ID       shift, and go to state 14
+
+    qop      go to state 38
+    uop      go to state 21
+    goplist  go to state 39
+
+
+State 19
+
+    5 statement: reg .
+
+    $default  reduce using rule 5 (statement)
+
+
+State 20
+
+    6 statement: qop .
+
+    $default  reduce using rule 6 (statement)
+
+
+State 21
+
+   15 qop: uop .
+
+    $default  reduce using rule 15 (qop)
+
+
+State 22
+
+   13 reg: T_QREG T_ID . "[" T_UINTEGER "]" ";"
+
+    "["  shift, and go to state 40
+
+
+State 23
+
+   14 reg: T_CREG T_ID . "[" T_UINTEGER "]" ";"
+
+    "["  shift, and go to state 41
+
+
+State 24
+
+   10 gatedecl: T_GATE_CUSTOM T_ID . idlist "{"
+   11         | T_GATE_CUSTOM T_ID . "(" ")" idlist "{"
+   12         | T_GATE_CUSTOM T_ID . "(" explist ")" idlist "{"
+
+    "("   shift, and go to state 42
+    T_ID  shift, and go to state 43
+
+    idlist  go to state 44
+
+
+State 25
+
+   19 qop: T_OPAQUE T_ID . idlist ";"
+   20    | T_OPAQUE T_ID . "(" ")" idlist ";"
+   21    | T_OPAQUE T_ID . "(" explist ")" idlist ";"
+
+    "("   shift, and go to state 45
+    T_ID  shift, and go to state 43
+
+    idlist  go to state 46
+
+
+State 26
+
+   29 idlist: T_ID .
+   31 mixedlist: T_ID . "[" T_UINTEGER "]"
+
+    "["  shift, and go to state 47
+
+    $default  reduce using rule 29 (idlist)
+
+
+State 27
+
+   18 qop: T_BARRIER anylist . ";"
+
+    ";"  shift, and go to state 48
+
+
+State 28
+
+   27 anylist: idlist .
+   30 idlist: idlist . "," T_ID
+   34 mixedlist: idlist . "," T_ID "[" T_UINTEGER "]"
+
+    ","  shift, and go to state 49
+
+    $default  reduce using rule 27 (anylist)
+
+
+State 29
+
+   28 anylist: mixedlist .
+   32 mixedlist: mixedlist . "," T_ID
+   33          | mixedlist . "," T_ID "[" T_UINTEGER "]"
+
+    ","  shift, and go to state 50
+
+    $default  reduce using rule 28 (anylist)
+
+
+State 30
+
+   35 argument: T_ID .
+   36         | T_ID . "[" T_UINTEGER "]"
+
+    "["  shift, and go to state 51
+
+    $default  reduce using rule 35 (argument)
+
+
+State 31
+
+   16 qop: T_MEASURE argument . "->" argument ";"
+
+    "->"  shift, and go to state 52
+
+
+State 32
+
+   17 qop: T_RESET argument . ";"
+
+    ";"  shift, and go to state 53
+
+
+State 33
+
+    7 statement: T_IF "(" . T_ID "==" T_UINTEGER ")" qop
+
+    T_ID  shift, and go to state 54
+
+
+State 34
+
+   23 uop: T_ID "(" . ")" anylist ";"
+   24    | T_ID "(" . explist ")" anylist ";"
+
+    "("         shift, and go to state 55
+    ")"         shift, and go to state 56
+    T_SUB       shift, and go to state 57
+    T_PI        shift, and go to state 58
+    T_SIN       shift, and go to state 59
+    T_COS       shift, and go to state 60
+    T_TAN       shift, and go to state 61
+    T_EXP       shift, and go to state 62
+    T_LN        shift, and go to state 63
+    T_SQRT      shift, and go to state 64
+    T_ID        shift, and go to state 65
+    T_REAL      shift, and go to state 66
+    T_UINTEGER  shift, and go to state 67
+
+    explist  go to state 68
+    exp      go to state 69
+    unaryop  go to state 70
+
+
+State 35
+
+   22 uop: T_ID anylist . ";"
+
+    ";"  shift, and go to state 71
+
+
+State 36
+
+    3 program: program statement .
+
+    $default  reduce using rule 3 (program)
+
+
+State 37
+
+    9 decl: gatedecl "}" .
+
+    $default  reduce using rule 9 (decl)
+
+
+State 38
+
+   25 goplist: qop .
+
+    $default  reduce using rule 25 (goplist)
+
+
+State 39
+
+    8 decl: gatedecl goplist . "}"
+   26 goplist: goplist . qop
+
+    T_OPAQUE   shift, and go to state 9
+    T_BARRIER  shift, and go to state 10
+    T_MEASURE  shift, and go to state 11
+    T_RESET    shift, and go to state 12
+    "}"        shift, and go to state 72
+    T_ID       shift, and go to state 14
+
+    qop  go to state 73
+    uop  go to state 21
+
+
+State 40
+
+   13 reg: T_QREG T_ID "[" . T_UINTEGER "]" ";"
+
+    T_UINTEGER  shift, and go to state 74
+
+
+State 41
+
+   14 reg: T_CREG T_ID "[" . T_UINTEGER "]" ";"
+
+    T_UINTEGER  shift, and go to state 75
+
+
+State 42
+
+   11 gatedecl: T_GATE_CUSTOM T_ID "(" . ")" idlist "{"
+   12         | T_GATE_CUSTOM T_ID "(" . explist ")" idlist "{"
+
+    "("         shift, and go to state 55
+    ")"         shift, and go to state 76
+    T_SUB       shift, and go to state 57
+    T_PI        shift, and go to state 58
+    T_SIN       shift, and go to state 59
+    T_COS       shift, and go to state 60
+    T_TAN       shift, and go to state 61
+    T_EXP       shift, and go to state 62
+    T_LN        shift, and go to state 63
+    T_SQRT      shift, and go to state 64
+    T_ID        shift, and go to state 65
+    T_REAL      shift, and go to state 66
+    T_UINTEGER  shift, and go to state 67
+
+    explist  go to state 77
+    exp      go to state 69
+    unaryop  go to state 70
+
+
+State 43
+
+   29 idlist: T_ID .
+
+    $default  reduce using rule 29 (idlist)
+
+
+State 44
+
+   10 gatedecl: T_GATE_CUSTOM T_ID idlist . "{"
+   30 idlist: idlist . "," T_ID
+
+    "{"  shift, and go to state 78
+    ","  shift, and go to state 79
+
+
+State 45
+
+   20 qop: T_OPAQUE T_ID "(" . ")" idlist ";"
+   21    | T_OPAQUE T_ID "(" . explist ")" idlist ";"
+
+    "("         shift, and go to state 55
+    ")"         shift, and go to state 80
+    T_SUB       shift, and go to state 57
+    T_PI        shift, and go to state 58
+    T_SIN       shift, and go to state 59
+    T_COS       shift, and go to state 60
+    T_TAN       shift, and go to state 61
+    T_EXP       shift, and go to state 62
+    T_LN        shift, and go to state 63
+    T_SQRT      shift, and go to state 64
+    T_ID        shift, and go to state 65
+    T_REAL      shift, and go to state 66
+    T_UINTEGER  shift, and go to state 67
+
+    explist  go to state 81
+    exp      go to state 69
+    unaryop  go to state 70
+
+
+State 46
+
+   19 qop: T_OPAQUE T_ID idlist . ";"
+   30 idlist: idlist . "," T_ID
+
+    ","  shift, and go to state 79
+    ";"  shift, and go to state 82
+
+
+State 47
+
+   31 mixedlist: T_ID "[" . T_UINTEGER "]"
+
+    T_UINTEGER  shift, and go to state 83
+
+
+State 48
+
+   18 qop: T_BARRIER anylist ";" .
+
+    $default  reduce using rule 18 (qop)
+
+
+State 49
+
+   30 idlist: idlist "," . T_ID
+   34 mixedlist: idlist "," . T_ID "[" T_UINTEGER "]"
+
+    T_ID  shift, and go to state 84
+
+
+State 50
+
+   32 mixedlist: mixedlist "," . T_ID
+   33          | mixedlist "," . T_ID "[" T_UINTEGER "]"
+
+    T_ID  shift, and go to state 85
+
+
+State 51
+
+   36 argument: T_ID "[" . T_UINTEGER "]"
+
+    T_UINTEGER  shift, and go to state 86
+
+
+State 52
+
+   16 qop: T_MEASURE argument "->" . argument ";"
+
+    T_ID  shift, and go to state 30
+
+    argument  go to state 87
+
+
+State 53
+
+   17 qop: T_RESET argument ";" .
+
+    $default  reduce using rule 17 (qop)
+
+
+State 54
+
+    7 statement: T_IF "(" T_ID . "==" T_UINTEGER ")" qop
+
+    "=="  shift, and go to state 88
+
+
+State 55
+
+   49 exp: "(" . exp ")"
+
+    "("         shift, and go to state 55
+    T_SUB       shift, and go to state 57
+    T_PI        shift, and go to state 58
+    T_SIN       shift, and go to state 59
+    T_COS       shift, and go to state 60
+    T_TAN       shift, and go to state 61
+    T_EXP       shift, and go to state 62
+    T_LN        shift, and go to state 63
+    T_SQRT      shift, and go to state 64
+    T_ID        shift, and go to state 65
+    T_REAL      shift, and go to state 66
+    T_UINTEGER  shift, and go to state 67
+
+    exp      go to state 89
+    unaryop  go to state 70
+
+
+State 56
+
+   23 uop: T_ID "(" ")" . anylist ";"
+
+    T_ID  shift, and go to state 26
+
+    anylist    go to state 90
+    idlist     go to state 28
+    mixedlist  go to state 29
+
+
+State 57
+
+   47 exp: T_SUB . exp
+
+    "("         shift, and go to state 55
+    T_SUB       shift, and go to state 57
+    T_PI        shift, and go to state 58
+    T_SIN       shift, and go to state 59
+    T_COS       shift, and go to state 60
+    T_TAN       shift, and go to state 61
+    T_EXP       shift, and go to state 62
+    T_LN        shift, and go to state 63
+    T_SQRT      shift, and go to state 64
+    T_ID        shift, and go to state 65
+    T_REAL      shift, and go to state 66
+    T_UINTEGER  shift, and go to state 67
+
+    exp      go to state 91
+    unaryop  go to state 70
+
+
+State 58
+
+   41 exp: T_PI .
+
+    $default  reduce using rule 41 (exp)
+
+
+State 59
+
+   51 unaryop: T_SIN .
+
+    $default  reduce using rule 51 (unaryop)
+
+
+State 60
+
+   52 unaryop: T_COS .
+
+    $default  reduce using rule 52 (unaryop)
+
+
+State 61
+
+   53 unaryop: T_TAN .
+
+    $default  reduce using rule 53 (unaryop)
+
+
+State 62
+
+   54 unaryop: T_EXP .
+
+    $default  reduce using rule 54 (unaryop)
+
+
+State 63
+
+   55 unaryop: T_LN .
+
+    $default  reduce using rule 55 (unaryop)
+
+
+State 64
+
+   56 unaryop: T_SQRT .
+
+    $default  reduce using rule 56 (unaryop)
+
+
+State 65
+
+   42 exp: T_ID .
+
+    $default  reduce using rule 42 (exp)
+
+
+State 66
+
+   39 exp: T_REAL .
+
+    $default  reduce using rule 39 (exp)
+
+
+State 67
+
+   40 exp: T_UINTEGER .
+
+    $default  reduce using rule 40 (exp)
+
+
+State 68
+
+   24 uop: T_ID "(" explist . ")" anylist ";"
+   38 explist: explist . "," exp
+
+    ")"  shift, and go to state 92
+    ","  shift, and go to state 93
+
+
+State 69
+
+   37 explist: exp .
+   43 exp: exp . T_ADD exp
+   44    | exp . T_SUB exp
+   45    | exp . T_MUL exp
+   46    | exp . T_DIV exp
+   48    | exp . T_CARROT exp
+
+    T_ADD     shift, and go to state 94
+    T_SUB     shift, and go to state 95
+    T_MUL     shift, and go to state 96
+    T_DIV     shift, and go to state 97
+    T_CARROT  shift, and go to state 98
+
+    $default  reduce using rule 37 (explist)
+
+
+State 70
+
+   50 exp: unaryop . "(" exp ")"
+
+    "("  shift, and go to state 99
+
+
+State 71
+
+   22 uop: T_ID anylist ";" .
+
+    $default  reduce using rule 22 (uop)
+
+
+State 72
+
+    8 decl: gatedecl goplist "}" .
+
+    $default  reduce using rule 8 (decl)
+
+
+State 73
+
+   26 goplist: goplist qop .
+
+    $default  reduce using rule 26 (goplist)
+
+
+State 74
+
+   13 reg: T_QREG T_ID "[" T_UINTEGER . "]" ";"
+
+    "]"  shift, and go to state 100
+
+
+State 75
+
+   14 reg: T_CREG T_ID "[" T_UINTEGER . "]" ";"
+
+    "]"  shift, and go to state 101
+
+
+State 76
+
+   11 gatedecl: T_GATE_CUSTOM T_ID "(" ")" . idlist "{"
+
+    T_ID  shift, and go to state 43
+
+    idlist  go to state 102
+
+
+State 77
+
+   12 gatedecl: T_GATE_CUSTOM T_ID "(" explist . ")" idlist "{"
+   38 explist: explist . "," exp
+
+    ")"  shift, and go to state 103
+    ","  shift, and go to state 93
+
+
+State 78
+
+   10 gatedecl: T_GATE_CUSTOM T_ID idlist "{" .
+
+    $default  reduce using rule 10 (gatedecl)
+
+
+State 79
+
+   30 idlist: idlist "," . T_ID
+
+    T_ID  shift, and go to state 104
+
+
+State 80
+
+   20 qop: T_OPAQUE T_ID "(" ")" . idlist ";"
+
+    T_ID  shift, and go to state 43
+
+    idlist  go to state 105
+
+
+State 81
+
+   21 qop: T_OPAQUE T_ID "(" explist . ")" idlist ";"
+   38 explist: explist . "," exp
+
+    ")"  shift, and go to state 106
+    ","  shift, and go to state 93
+
+
+State 82
+
+   19 qop: T_OPAQUE T_ID idlist ";" .
+
+    $default  reduce using rule 19 (qop)
+
+
+State 83
+
+   31 mixedlist: T_ID "[" T_UINTEGER . "]"
+
+    "]"  shift, and go to state 107
+
+
+State 84
+
+   30 idlist: idlist "," T_ID .
+   34 mixedlist: idlist "," T_ID . "[" T_UINTEGER "]"
+
+    "["  shift, and go to state 108
+
+    $default  reduce using rule 30 (idlist)
+
+
+State 85
+
+   32 mixedlist: mixedlist "," T_ID .
+   33          | mixedlist "," T_ID . "[" T_UINTEGER "]"
+
+    "["  shift, and go to state 109
+
+    $default  reduce using rule 32 (mixedlist)
+
+
+State 86
+
+   36 argument: T_ID "[" T_UINTEGER . "]"
+
+    "]"  shift, and go to state 110
+
+
+State 87
+
+   16 qop: T_MEASURE argument "->" argument . ";"
+
+    ";"  shift, and go to state 111
+
+
+State 88
+
+    7 statement: T_IF "(" T_ID "==" . T_UINTEGER ")" qop
+
+    T_UINTEGER  shift, and go to state 112
+
+
+State 89
+
+   43 exp: exp . T_ADD exp
+   44    | exp . T_SUB exp
+   45    | exp . T_MUL exp
+   46    | exp . T_DIV exp
+   48    | exp . T_CARROT exp
+   49    | "(" exp . ")"
+
+    ")"       shift, and go to state 113
+    T_ADD     shift, and go to state 94
+    T_SUB     shift, and go to state 95
+    T_MUL     shift, and go to state 96
+    T_DIV     shift, and go to state 97
+    T_CARROT  shift, and go to state 98
+
+
+State 90
+
+   23 uop: T_ID "(" ")" anylist . ";"
+
+    ";"  shift, and go to state 114
+
+
+State 91
+
+   43 exp: exp . T_ADD exp
+   44    | exp . T_SUB exp
+   45    | exp . T_MUL exp
+   46    | exp . T_DIV exp
+   47    | T_SUB exp .
+   48    | exp . T_CARROT exp
+
+    T_MUL     shift, and go to state 96
+    T_DIV     shift, and go to state 97
+    T_CARROT  shift, and go to state 98
+
+    $default  reduce using rule 47 (exp)
+
+
+State 92
+
+   24 uop: T_ID "(" explist ")" . anylist ";"
+
+    T_ID  shift, and go to state 26
+
+    anylist    go to state 115
+    idlist     go to state 28
+    mixedlist  go to state 29
+
+
+State 93
+
+   38 explist: explist "," . exp
+
+    "("         shift, and go to state 55
+    T_SUB       shift, and go to state 57
+    T_PI        shift, and go to state 58
+    T_SIN       shift, and go to state 59
+    T_COS       shift, and go to state 60
+    T_TAN       shift, and go to state 61
+    T_EXP       shift, and go to state 62
+    T_LN        shift, and go to state 63
+    T_SQRT      shift, and go to state 64
+    T_ID        shift, and go to state 65
+    T_REAL      shift, and go to state 66
+    T_UINTEGER  shift, and go to state 67
+
+    exp      go to state 116
+    unaryop  go to state 70
+
+
+State 94
+
+   43 exp: exp T_ADD . exp
+
+    "("         shift, and go to state 55
+    T_SUB       shift, and go to state 57
+    T_PI        shift, and go to state 58
+    T_SIN       shift, and go to state 59
+    T_COS       shift, and go to state 60
+    T_TAN       shift, and go to state 61
+    T_EXP       shift, and go to state 62
+    T_LN        shift, and go to state 63
+    T_SQRT      shift, and go to state 64
+    T_ID        shift, and go to state 65
+    T_REAL      shift, and go to state 66
+    T_UINTEGER  shift, and go to state 67
+
+    exp      go to state 117
+    unaryop  go to state 70
+
+
+State 95
+
+   44 exp: exp T_SUB . exp
+
+    "("         shift, and go to state 55
+    T_SUB       shift, and go to state 57
+    T_PI        shift, and go to state 58
+    T_SIN       shift, and go to state 59
+    T_COS       shift, and go to state 60
+    T_TAN       shift, and go to state 61
+    T_EXP       shift, and go to state 62
+    T_LN        shift, and go to state 63
+    T_SQRT      shift, and go to state 64
+    T_ID        shift, and go to state 65
+    T_REAL      shift, and go to state 66
+    T_UINTEGER  shift, and go to state 67
+
+    exp      go to state 118
+    unaryop  go to state 70
+
+
+State 96
+
+   45 exp: exp T_MUL . exp
+
+    "("         shift, and go to state 55
+    T_SUB       shift, and go to state 57
+    T_PI        shift, and go to state 58
+    T_SIN       shift, and go to state 59
+    T_COS       shift, and go to state 60
+    T_TAN       shift, and go to state 61
+    T_EXP       shift, and go to state 62
+    T_LN        shift, and go to state 63
+    T_SQRT      shift, and go to state 64
+    T_ID        shift, and go to state 65
+    T_REAL      shift, and go to state 66
+    T_UINTEGER  shift, and go to state 67
+
+    exp      go to state 119
+    unaryop  go to state 70
+
+
+State 97
+
+   46 exp: exp T_DIV . exp
+
+    "("         shift, and go to state 55
+    T_SUB       shift, and go to state 57
+    T_PI        shift, and go to state 58
+    T_SIN       shift, and go to state 59
+    T_COS       shift, and go to state 60
+    T_TAN       shift, and go to state 61
+    T_EXP       shift, and go to state 62
+    T_LN        shift, and go to state 63
+    T_SQRT      shift, and go to state 64
+    T_ID        shift, and go to state 65
+    T_REAL      shift, and go to state 66
+    T_UINTEGER  shift, and go to state 67
+
+    exp      go to state 120
+    unaryop  go to state 70
+
+
+State 98
+
+   48 exp: exp T_CARROT . exp
+
+    "("         shift, and go to state 55
+    T_SUB       shift, and go to state 57
+    T_PI        shift, and go to state 58
+    T_SIN       shift, and go to state 59
+    T_COS       shift, and go to state 60
+    T_TAN       shift, and go to state 61
+    T_EXP       shift, and go to state 62
+    T_LN        shift, and go to state 63
+    T_SQRT      shift, and go to state 64
+    T_ID        shift, and go to state 65
+    T_REAL      shift, and go to state 66
+    T_UINTEGER  shift, and go to state 67
+
+    exp      go to state 121
+    unaryop  go to state 70
+
+
+State 99
+
+   50 exp: unaryop "(" . exp ")"
+
+    "("         shift, and go to state 55
+    T_SUB       shift, and go to state 57
+    T_PI        shift, and go to state 58
+    T_SIN       shift, and go to state 59
+    T_COS       shift, and go to state 60
+    T_TAN       shift, and go to state 61
+    T_EXP       shift, and go to state 62
+    T_LN        shift, and go to state 63
+    T_SQRT      shift, and go to state 64
+    T_ID        shift, and go to state 65
+    T_REAL      shift, and go to state 66
+    T_UINTEGER  shift, and go to state 67
+
+    exp      go to state 122
+    unaryop  go to state 70
+
+
+State 100
+
+   13 reg: T_QREG T_ID "[" T_UINTEGER "]" . ";"
+
+    ";"  shift, and go to state 123
+
+
+State 101
+
+   14 reg: T_CREG T_ID "[" T_UINTEGER "]" . ";"
+
+    ";"  shift, and go to state 124
+
+
+State 102
+
+   11 gatedecl: T_GATE_CUSTOM T_ID "(" ")" idlist . "{"
+   30 idlist: idlist . "," T_ID
+
+    "{"  shift, and go to state 125
+    ","  shift, and go to state 79
+
+
+State 103
+
+   12 gatedecl: T_GATE_CUSTOM T_ID "(" explist ")" . idlist "{"
+
+    T_ID  shift, and go to state 43
+
+    idlist  go to state 126
+
+
+State 104
+
+   30 idlist: idlist "," T_ID .
+
+    $default  reduce using rule 30 (idlist)
+
+
+State 105
+
+   20 qop: T_OPAQUE T_ID "(" ")" idlist . ";"
+   30 idlist: idlist . "," T_ID
+
+    ","  shift, and go to state 79
+    ";"  shift, and go to state 127
+
+
+State 106
+
+   21 qop: T_OPAQUE T_ID "(" explist ")" . idlist ";"
+
+    T_ID  shift, and go to state 43
+
+    idlist  go to state 128
+
+
+State 107
+
+   31 mixedlist: T_ID "[" T_UINTEGER "]" .
+
+    $default  reduce using rule 31 (mixedlist)
+
+
+State 108
+
+   34 mixedlist: idlist "," T_ID "[" . T_UINTEGER "]"
+
+    T_UINTEGER  shift, and go to state 129
+
+
+State 109
+
+   33 mixedlist: mixedlist "," T_ID "[" . T_UINTEGER "]"
+
+    T_UINTEGER  shift, and go to state 130
+
+
+State 110
+
+   36 argument: T_ID "[" T_UINTEGER "]" .
+
+    $default  reduce using rule 36 (argument)
+
+
+State 111
+
+   16 qop: T_MEASURE argument "->" argument ";" .
+
+    $default  reduce using rule 16 (qop)
+
+
+State 112
+
+    7 statement: T_IF "(" T_ID "==" T_UINTEGER . ")" qop
+
+    ")"  shift, and go to state 131
+
+
+State 113
+
+   49 exp: "(" exp ")" .
+
+    $default  reduce using rule 49 (exp)
+
+
+State 114
+
+   23 uop: T_ID "(" ")" anylist ";" .
+
+    $default  reduce using rule 23 (uop)
+
+
+State 115
+
+   24 uop: T_ID "(" explist ")" anylist . ";"
+
+    ";"  shift, and go to state 132
+
+
+State 116
+
+   38 explist: explist "," exp .
+   43 exp: exp . T_ADD exp
+   44    | exp . T_SUB exp
+   45    | exp . T_MUL exp
+   46    | exp . T_DIV exp
+   48    | exp . T_CARROT exp
+
+    T_ADD     shift, and go to state 94
+    T_SUB     shift, and go to state 95
+    T_MUL     shift, and go to state 96
+    T_DIV     shift, and go to state 97
+    T_CARROT  shift, and go to state 98
+
+    $default  reduce using rule 38 (explist)
+
+
+State 117
+
+   43 exp: exp . T_ADD exp
+   43    | exp T_ADD exp .
+   44    | exp . T_SUB exp
+   45    | exp . T_MUL exp
+   46    | exp . T_DIV exp
+   48    | exp . T_CARROT exp
+
+    T_SUB     shift, and go to state 95
+    T_MUL     shift, and go to state 96
+    T_DIV     shift, and go to state 97
+    T_CARROT  shift, and go to state 98
+
+    $default  reduce using rule 43 (exp)
+
+
+State 118
+
+   43 exp: exp . T_ADD exp
+   44    | exp . T_SUB exp
+   44    | exp T_SUB exp .
+   45    | exp . T_MUL exp
+   46    | exp . T_DIV exp
+   48    | exp . T_CARROT exp
+
+    T_MUL     shift, and go to state 96
+    T_DIV     shift, and go to state 97
+    T_CARROT  shift, and go to state 98
+
+    $default  reduce using rule 44 (exp)
+
+
+State 119
+
+   43 exp: exp . T_ADD exp
+   44    | exp . T_SUB exp
+   45    | exp . T_MUL exp
+   45    | exp T_MUL exp .
+   46    | exp . T_DIV exp
+   48    | exp . T_CARROT exp
+
+    T_DIV     shift, and go to state 97
+    T_CARROT  shift, and go to state 98
+
+    $default  reduce using rule 45 (exp)
+
+
+State 120
+
+   43 exp: exp . T_ADD exp
+   44    | exp . T_SUB exp
+   45    | exp . T_MUL exp
+   46    | exp . T_DIV exp
+   46    | exp T_DIV exp .
+   48    | exp . T_CARROT exp
+
+    T_CARROT  shift, and go to state 98
+
+    $default  reduce using rule 46 (exp)
+
+
+State 121
+
+   43 exp: exp . T_ADD exp
+   44    | exp . T_SUB exp
+   45    | exp . T_MUL exp
+   46    | exp . T_DIV exp
+   48    | exp . T_CARROT exp
+   48    | exp T_CARROT exp .
+
+    $default  reduce using rule 48 (exp)
+
+
+State 122
+
+   43 exp: exp . T_ADD exp
+   44    | exp . T_SUB exp
+   45    | exp . T_MUL exp
+   46    | exp . T_DIV exp
+   48    | exp . T_CARROT exp
+   50    | unaryop "(" exp . ")"
+
+    ")"       shift, and go to state 133
+    T_ADD     shift, and go to state 94
+    T_SUB     shift, and go to state 95
+    T_MUL     shift, and go to state 96
+    T_DIV     shift, and go to state 97
+    T_CARROT  shift, and go to state 98
+
+
+State 123
+
+   13 reg: T_QREG T_ID "[" T_UINTEGER "]" ";" .
+
+    $default  reduce using rule 13 (reg)
+
+
+State 124
+
+   14 reg: T_CREG T_ID "[" T_UINTEGER "]" ";" .
+
+    $default  reduce using rule 14 (reg)
+
+
+State 125
+
+   11 gatedecl: T_GATE_CUSTOM T_ID "(" ")" idlist "{" .
+
+    $default  reduce using rule 11 (gatedecl)
+
+
+State 126
+
+   12 gatedecl: T_GATE_CUSTOM T_ID "(" explist ")" idlist . "{"
+   30 idlist: idlist . "," T_ID
+
+    "{"  shift, and go to state 134
+    ","  shift, and go to state 79
+
+
+State 127
+
+   20 qop: T_OPAQUE T_ID "(" ")" idlist ";" .
+
+    $default  reduce using rule 20 (qop)
+
+
+State 128
+
+   21 qop: T_OPAQUE T_ID "(" explist ")" idlist . ";"
+   30 idlist: idlist . "," T_ID
+
+    ","  shift, and go to state 79
+    ";"  shift, and go to state 135
+
+
+State 129
+
+   34 mixedlist: idlist "," T_ID "[" T_UINTEGER . "]"
+
+    "]"  shift, and go to state 136
+
+
+State 130
+
+   33 mixedlist: mixedlist "," T_ID "[" T_UINTEGER . "]"
+
+    "]"  shift, and go to state 137
+
+
+State 131
+
+    7 statement: T_IF "(" T_ID "==" T_UINTEGER ")" . qop
+
+    T_OPAQUE   shift, and go to state 9
+    T_BARRIER  shift, and go to state 10
+    T_MEASURE  shift, and go to state 11
+    T_RESET    shift, and go to state 12
+    T_ID       shift, and go to state 14
+
+    qop  go to state 138
+    uop  go to state 21
+
+
+State 132
+
+   24 uop: T_ID "(" explist ")" anylist ";" .
+
+    $default  reduce using rule 24 (uop)
+
+
+State 133
+
+   50 exp: unaryop "(" exp ")" .
+
+    $default  reduce using rule 50 (exp)
+
+
+State 134
+
+   12 gatedecl: T_GATE_CUSTOM T_ID "(" explist ")" idlist "{" .
+
+    $default  reduce using rule 12 (gatedecl)
+
+
+State 135
+
+   21 qop: T_OPAQUE T_ID "(" explist ")" idlist ";" .
+
+    $default  reduce using rule 21 (qop)
+
+
+State 136
+
+   34 mixedlist: idlist "," T_ID "[" T_UINTEGER "]" .
+
+    $default  reduce using rule 34 (mixedlist)
+
+
+State 137
+
+   33 mixedlist: mixedlist "," T_ID "[" T_UINTEGER "]" .
+
+    $default  reduce using rule 33 (mixedlist)
+
+
+State 138
+
+    7 statement: T_IF "(" T_ID "==" T_UINTEGER ")" qop .
+
+    $default  reduce using rule 7 (statement)

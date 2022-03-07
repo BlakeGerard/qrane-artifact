@@ -1,0 +1,73 @@
+Hello, 
+
+Thank you for reviewing the artifact for Qrane. 
+This artifact is designed to reproduce figures 8, 9, 10, and 11 from the main
+body of the paper, and figure 1 from the supplemental section.
+
+The main wrapper script, "run-tests.py" will execute the whole experimentation pipeline,
+from Qrane invocation and data dumping to plotting, automatically. In order to speed-up
+experiment time, the reviewer may edit the THREADS variable to allow the script to
+run multiple tests at the same time. This is done with Python multiprocessing. The default 
+is 4. 
+
+Run: "python3.9 run-tests.py"
+
+1. Data Collection
+First, Qrane will be called to run reconstruction on the three datasets described in the paper.
+All datasets can be found in "aqcsl/qrane/qasm". Qrane's output logs will be stored in the 
+"data/reconstruction" folder for each dataset.
+Next, Qrane will run the same reconstruction for the QUEKO-BIGD dataset, but also 
+write transformed OpenQASM files to the "data/codegen" directory. Finally, the script
+will run pytket, a Quantum compiler described in the paper, with both the original
+QUEKO-BIGD files and their transformed counterparts in "data/codegen", and output the raw
+comparison data to "data/transformation".
+
+2. Plotting
+The main wrapper script will move to plotting once all data is collected. The reconstruction
+and timing plots read the data in "data/reconstruction" for the appropriate datasets
+and write plots to "plots/reconstruction" and "plots/timing". Then, the script will run
+read the raw comparison data in "data/transformation" and write plots for transformed gate count
+and circuit depth to "plots/transformation".
+
+3. Directory Structure
+
+data/
+   reconstruction/           # Qrane output dumps will be found here
+	ibmqx/
+	queko-bss-20qbt/
+	queko-bigd/
+	qasmbench-large/
+   codegen/		     # Qrane transformed OpenQASM files will be found here
+	queko-bigd/
+   transformation/	     # Tket compilation data will be found here
+
+plots/                       # Plots will be placed here
+   reconstruction/
+   timing/
+   transformation
+
+aqcsl/qrane                  # This is the qrane installation
+   qasm/                     # Contains OpenQASM datasets
+   scripts/artifact          # Home for the scripts used to collect data
+
+qrane-paper/cc2022/scripts   # Home for the plotting scripts
+
+4. Modifying Qrane's Behavior
+The main wrapper script configures each run of qrane to match the parameters listed in Section 6.3
+of the paper. The two parameters are "chunk" and "search_limit". The former splits the input QASM into N 
+subcircuit which can be processed in parallel with OpenMP. The search limit significantly improves reconstruction time,
+but should most often be set to zero when chunk size set to 2000-5000 qops. These can be changed by the reviewer if desired, 
+at the "run_reconstruction()" function calls at the bottom of the run-tests.py script.
+
+Also, please set OMP_NUM_THREADS to your preference.
+
+5. Possible Errors
+
+I have never used Docker before, so I sincerely apologize for any errors that arise, particularly with Python.
+If you call the script and all of the commands fly by quickly and the plotting scripts give size of zero errors, 
+then Qrane ran into an error and gave no output. The likely error is that libbarvinok was not found on LD_LIBRARY_PATH.
+To fix this, cd into "aqcsl/qrane" and run "source qrane-vars.sh". 
+
+Please contact the authors with ANY issues that arise and we will be glad to help.
+
+Thank you again for reviewing this artifact.
