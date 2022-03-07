@@ -10,11 +10,17 @@ experiment time, the reviewer may edit the THREADS variable to allow the script 
 run multiple tests at the same time. This is done with Python multiprocessing. The default 
 is 4. 
 
-Run: "python3.9 run-tests.py"
+Workflow:
+cd ./qrane
+./qrane-install --install-all
+source qrane-vars.sh
+make
+cd ..
+python3.9 run-tests.py
 
 1. Data Collection
 First, Qrane will be called to run reconstruction on the three datasets described in the paper.
-All datasets can be found in "aqcsl/qrane/qasm". Qrane's output logs will be stored in the 
+All datasets can be found in "qrane/qasm". Qrane's output logs will be stored in the 
 "data/reconstruction" folder for each dataset.
 Next, Qrane will run the same reconstruction for the QUEKO-BIGD dataset, but also 
 write transformed OpenQASM files to the "data/codegen" directory. Finally, the script
@@ -32,25 +38,24 @@ and circuit depth to "plots/transformation".
 3. Directory Structure
 
 data/
-   reconstruction/           # Qrane output dumps will be found here
+   reconstruction/            # Qrane output dumps will be found here
 	ibmqx/
 	queko-bss-20qbt/
 	queko-bigd/
 	qasmbench-large/
-   codegen/		     # Qrane transformed OpenQASM files will be found here
+   codegen/		              # Qrane transformed OpenQASM files will be found here
 	queko-bigd/
-   transformation/	     # Tket compilation data will be found here
+   transformation/	          # Tket compilation data will be found here
 
-plots/                       # Plots will be placed here
+plots/                        # Plots will be placed here
    reconstruction/
    timing/
    transformation
 
-aqcsl/qrane                  # This is the qrane installation
-   qasm/                     # Contains OpenQASM datasets
-   scripts/artifact          # Home for the scripts used to collect data
+qrane/                        # This is the qrane installation
+   qasm/                      # Contains OpenQASM datasets
 
-qrane-paper/cc2022/scripts   # Home for the plotting scripts
+scripts/                      # Helper scripts for running the tests and plotting
 
 4. Modifying Qrane's Behavior
 The main wrapper script configures each run of qrane to match the parameters listed in Section 6.3
@@ -63,10 +68,9 @@ Also, please set OMP_NUM_THREADS to your preference.
 
 5. Possible Errors
 
-I have never used Docker before, so I sincerely apologize for any errors that arise, particularly with Python.
 If you call the script and all of the commands fly by quickly and the plotting scripts give size of zero errors, 
 then Qrane ran into an error and gave no output. The likely error is that libbarvinok was not found on LD_LIBRARY_PATH.
-To fix this, cd into "aqcsl/qrane" and run "source qrane-vars.sh". 
+To fix this, cd into "./qrane" and run "source qrane-vars.sh". 
 
 Please contact the authors with ANY issues that arise and we will be glad to help.
 
