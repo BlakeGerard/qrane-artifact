@@ -1,14 +1,14 @@
 Hello, 
 
 Thank you for reviewing the artifact for Qrane. 
-This artifact is designed to reproduce figures 8, 9, 10, and 11 from the main
+This artifact is designed to invoke Qrane to run the tests that generated figures 8, 9, 10, and 11 from the main
 body of the paper, and figure 1 from the supplemental section.
 
 The main wrapper script, "run-tests.py" will execute the whole experimentation pipeline,
 from Qrane invocation and data dumping to plotting, automatically. In order to speed-up
 experiment time, the reviewer may edit the THREADS variable to allow the script to
 run multiple tests at the same time. This is done with Python multiprocessing. The default 
-is 4. 
+is 4. A REQUIREMENTS.txt file has been provided for setting up a Python environment.
 
 Workflow:
 cd ./qrane
