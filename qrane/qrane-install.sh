@@ -35,7 +35,7 @@ install_barvinok() {
 	ntl_build=./$ntl_version/src/
 	tar -xvzf $zip
 	cd ./$barvinok_version/
-	./configure --prefix=$install_dir --enable-shared-barvinok && make && make install
+	./configure --prefix=$install_dir --with-ntl-prefix=$ntl_dir --enable-shared-barvinok && make && make install
 	cd -
 }
 
